@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Addquestion from "../addQuestion/Addquestion";
 import { useDispatch } from "react-redux";
 import { addForm } from "../../redux/FormSlice";
+import style from "./CreateForm.module.css";
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
@@ -15,8 +16,10 @@ export default function CreateForm() {
 
   const navigate = useNavigate();
 
-  const submitHandler = (e) => {
-    setPopUp(true);
+  const submitHandler = () => {
+    if (title !== "") {
+      setPopUp(true);
+    }
   };
 
   const dispatch = useDispatch();
@@ -40,25 +43,43 @@ export default function CreateForm() {
     setPopUp(false);
   };
 
+  const BtnStyle = {
+    backgroundColor: "#664217",
+    color: "#fff",
+    padding: "10px 20px",
+    borderRadius: "4px",
+    fontWeight: "bold",
+    margin: "2rem",
+  };
+
+  const MyStyle = {
+    backgroundColor: "wheat",
+    border: "1px solid",
+  };
+
   console.log(question);
 
   return (
-    <div>
+    <div className={style.CreateFormScreen}>
+      <h1>Create Form</h1>
+      <Button
+        style={BtnStyle}
+        variant="contained"
+        onClick={() => navigate("/")}
+      >
+        Go back to HomePage
+      </Button>
+
       <div>
-        <h1>Create Form</h1>
-        <Button variant="contained" onClick={() => navigate("/")}>
-          Go back to HomePage
-        </Button>
-      </div>
-      <div>
-        <div>
+        <div className={style.addFormDiv}>
           <TextField
-            variant="standard"
+            variant="filled"
+            style={MyStyle}
             label="Enter form title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           ></TextField>
-          <Button variant="contained" onClick={submitHandler}>
+          <Button style={BtnStyle} variant="contained" onClick={submitHandler}>
             Add Question
           </Button>
         </div>
@@ -68,7 +89,6 @@ export default function CreateForm() {
             setAnswerType={setAnswerType}
             setChoices={setChoices}
             setQuestionTitle={setQuestionTitle}
-            setPopUp={setPopUp}
             popUp={popUp}
             choices={choices}
             answerType={answerType}

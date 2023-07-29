@@ -1,0 +1,13 @@
+.CreateFormScreen{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    height: 100vh;
+}
+
+.addFormDiv{
+    display: flex;
+    flex-direction: column;
+    padding-top: 3rem;
+}

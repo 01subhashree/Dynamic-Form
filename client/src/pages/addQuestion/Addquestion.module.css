@@ -1,0 +1,16 @@
+.mainDiv {
+    display: flex;
+    flex-direction: column;
+    border-radius: 2rem;
+}
+.wrapper {
+    background-color: white;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    min-width: 50vw;
+    padding: 0.5rem;
+}
+
+
