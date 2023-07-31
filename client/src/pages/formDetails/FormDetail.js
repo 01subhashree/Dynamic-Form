@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import style from "./FormDetail.module.css";
@@ -16,6 +15,7 @@ export default function FormDetail() {
     return <div>Form not found!</div>;
   }
 
+  console.log("formDetail", form);
   const myStyle = {
     backgroundColor: "rgb(197 77 120)",
     color: "#fff",
@@ -34,7 +34,7 @@ export default function FormDetail() {
       <div>
         <h1>{form.formTitle}</h1>
         <h4>CreatedAt: {form.createdAt}</h4>
-        {form.actions.map((action) => (
+        {form.questions.map((action) => (
           <div key={action.questionId}>
             <h2>{action.question}</h2>
             <div>

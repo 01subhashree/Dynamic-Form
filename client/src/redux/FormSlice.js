@@ -23,25 +23,28 @@ const formsSlice = createSlice({
     forms: [],
   },
   reducers: {
-    addForm: (state, action) => {
-      const { formTitle, question } = action.payload;
-      const formId = Date.now().toString(); // Generate a unique formId (you can use a more robust method in production)
-      const createdAt = new Date().toLocaleDateString(); // Get the current date
-      const formURL = `https://reactform.com/formid=${formId}`;
-
-      state.forms.push({
-        formId,
-        createdAt,
-        formURL,
-        formTitle,
-        actions: [question],
+    getForm: (state, action) => {
+      console.log(action.payload);
+      state.forms = action.payload.map((form) => {
+        return {
+          formId: form.formId,
+          formTitle: form.formTitle,
+          formURL: form.formURL,
+          questions: form.questions,
+        };
       });
+    },
+
+    addForm: (state, action) => {
+      state.forms.push(action.payload);
+      // state.forms = action.payload;
     },
     deleteForm: (state, action) => {
       const formId = action.payload;
       state.forms = state.forms.filter((form) => form.formId !== formId);
     },
     editForm: (state, action) => {
+      console.log(action.payload);
       const { formId, newTitle } = action.payload;
       const form = state.forms.find((form) => form.formId === formId);
       form.formTitle = newTitle;
@@ -49,6 +52,5 @@ const formsSlice = createSlice({
   },
 });
 
-export const { addForm, addQuestion, deleteForm, editForm } =
-  formsSlice.actions;
+export const { addForm, getForm, deleteForm, editForm } = formsSlice.actions;
 export default formsSlice.reducer;

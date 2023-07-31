@@ -1,37 +1,79 @@
-import React from "react";
+import { useState } from "react";
 import { Button } from "@mui/material";
-import { useSelector } from "react-redux/es/hooks/useSelector";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { deleteForm } from "../../redux/FormSlice";
+import { deleteForm, editForm, getForm } from "../../redux/FormSlice";
 import style from "./FormPage.module.css";
+import { useEffect } from "react";
+import { getLocalData, setLocalData } from "../../localStroageData";
 
 export default function FormPage() {
+  const [isEdit, setIsEdit] = useState(false);
+  const [updatedTitle, setUpdatedTitle] = useState("");
   const navigate = useNavigate();
-  const selector = useSelector((state) => state.forms.forms);
+  const forms = useSelector((state) => state.forms.forms);
   const dispatch = useDispatch();
+  const [updatedId, setUpdatedId] = useState("");
 
-  const deleteHandler = (id) => {
-    dispatch(deleteForm(id));
+  useEffect(() => {
+    const formData = getLocalData();
+
+    dispatch(getForm(formData));
+    console.log("localData", formData);
+  }, []);
+
+  const deleteHandler = (formId) => {
+    dispatch(deleteForm(formId));
+    // Get the current data from local storage
+    const existingData = getLocalData();
+
+    // Filter out the form with the given formId
+    const updatedData = existingData.filter((form) => form.formId !== formId);
+
+    // Save the updated data back to local storage
+    setLocalData(updatedData);
   };
 
-  const editHandler = (id) => {
-    navigate(`/form/${id}`);
+  const editHandler = (title, id) => {
+    setIsEdit(true);
+    setUpdatedTitle(title);
+    setUpdatedId(id);
   };
 
   const buttonStyle = {
-    backgroundColor: "rgb(197 77 120)",
+    backgroundColor: "rgb(197, 77, 120)",
     color: "#fff",
     padding: "10px 20px",
     borderRadius: "4px",
     fontWeight: "bold",
   };
 
+  const updateHandler = (formId) => {
+    dispatch(editForm({ formId: formId, newTitle: updatedTitle }));
+
+    // Get the current data from local storage
+    const existingData = getLocalData();
+
+    // Find the form with the given formId in the existing data
+    const updatedData = existingData.map((form) => {
+      if (form.formId === formId) {
+        return { ...form, formTitle: updatedTitle };
+      }
+      return form;
+    });
+
+    // Save the updated data back to local storage
+    setLocalData(updatedData);
+    setIsEdit(false);
+    setUpdatedTitle("");
+  };
+
+  console.log("form data", forms);
+
   return (
     <div className={style.formScreen}>
       <div className={style.formdiv}>
         <h1>FormPage</h1>
-
         <Button
           style={buttonStyle}
           variant="contained"
@@ -41,10 +83,22 @@ export default function FormPage() {
         </Button>
       </div>
       <div className={style.formDashboard}>
-        {selector &&
-          selector.map((form) => (
+        {forms &&
+          forms.map((form) => (
             <div key={form.formId} className={style.formDetailPage}>
-              <h1>{form.formTitle}</h1>
+              {isEdit && form.formId === updatedId ? (
+                <div>
+                  <input
+                    value={updatedTitle}
+                    onChange={(e) => setUpdatedTitle(e.target.value)}
+                  />
+                  <Button onClick={() => updateHandler(form.formId)}>
+                    Update
+                  </Button>
+                </div>
+              ) : (
+                <h1>{form.formTitle}</h1>
+              )}
               <h4>{form.createdAt}</h4>
               <Link
                 className={style.formDetailPage_link}
@@ -61,7 +115,7 @@ export default function FormPage() {
                 </Button>
                 <Button
                   style={buttonStyle}
-                  onClick={() => editHandler(form.formId)}
+                  onClick={() => editHandler(form.formTitle, form.formId)}
                 >
                   Edit
                 </Button>

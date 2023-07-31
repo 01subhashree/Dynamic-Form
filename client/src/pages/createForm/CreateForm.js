@@ -5,6 +5,8 @@ import Addquestion from "../addQuestion/Addquestion";
 import { useDispatch } from "react-redux";
 import { addForm } from "../../redux/FormSlice";
 import style from "./CreateForm.module.css";
+import axios from "axios";
+import { getLocalData, setLocalData } from "../../localStroageData";
 
 export default function CreateForm() {
   const [title, setTitle] = useState("");
@@ -24,7 +26,7 @@ export default function CreateForm() {
 
   const dispatch = useDispatch();
 
-  const addQuestionHandler = () => {
+  const addQuestionHandler = async () => {
     if (questionTitle.trim() === "" || answerType.trim() === "") {
       // Show an error or validation message
       return;
@@ -36,11 +38,38 @@ export default function CreateForm() {
       answerType,
       choices: choices.split("\n").map((choice) => choice.trim()),
     };
-    dispatch(addForm({ formTitle: title, question: newQuestion }));
+
+    // dispatch(addForm({ formTitle: title, question: newQuestion }));
+
+    const formId = Date.now().toString();
+    const createdAt = new Date().toLocaleDateString();
+    const formURL = `https://dynamicform.com/formid=${formId}`;
+
+    const newForm = {
+      formId,
+      createdAt,
+      formURL,
+      formTitle: title,
+      questions: [newQuestion],
+    };
+    // Get the existing data from local storage
+    // const existingData = JSON.parse(localStorage.getItem("FormData"));
+    const existingData = getLocalData();
+    console.log("excitingdata", existingData);
+
+    // Append the new form data to the existing data
+    const updatedData = [...existingData, newForm];
+
+    // Save the updated data back to local storage
+    setLocalData(updatedData);
+
+    dispatch(addForm(newForm));
 
     setQuestion("");
     setTitle("");
     setPopUp(false);
+    setAnswerType("");
+    setChoices("");
   };
 
   const BtnStyle = {
