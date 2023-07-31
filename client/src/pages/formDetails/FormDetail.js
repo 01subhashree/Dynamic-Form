@@ -31,7 +31,7 @@ export default function FormDetail() {
       <Button style={myStyle} onClick={() => navigate("/")}>
         Go Back to HomePage
       </Button>
-      <div>
+      <div className={style.formDetailPage_div}>
         <h1>{form.formTitle}</h1>
         <h4>CreatedAt: {form.createdAt}</h4>
         {form.questions.map((action) => (

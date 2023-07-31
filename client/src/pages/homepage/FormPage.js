@@ -87,12 +87,15 @@ export default function FormPage() {
           forms.map((form) => (
             <div key={form.formId} className={style.formDetailPage}>
               {isEdit && form.formId === updatedId ? (
-                <div>
+                <div className={style.editForm_screen}>
                   <input
                     value={updatedTitle}
                     onChange={(e) => setUpdatedTitle(e.target.value)}
                   />
-                  <Button onClick={() => updateHandler(form.formId)}>
+                  <Button
+                    style={buttonStyle}
+                    onClick={() => updateHandler(form.formId)}
+                  >
                     Update
                   </Button>
                 </div>
@@ -104,7 +107,7 @@ export default function FormPage() {
                 className={style.formDetailPage_link}
                 to={`/form/${form.formId}`}
               >
-                {form.formURL}
+                <span>{form.formURL}</span>
               </Link>
               <div className={style.formDetailPage_buttons}>
                 <Button
